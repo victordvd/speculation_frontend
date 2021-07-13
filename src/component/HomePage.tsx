@@ -6,7 +6,7 @@ import Button from './Button';
 import { Utils } from '../util'
 import GlobalVar from '../Global'
 import ContractGrid  from './ContractGrid'
-
+import { Container, Row, Col } from 'react-grid-system';
 /*
 function loadContracts() {
   let selector = $('#contractSelector')
@@ -40,41 +40,55 @@ function loadContracts() {
 }*/
 
 
-function loadContracts() {
-  let selector = $('#contractSelector')
-  // header
-  selector.append('<tr><th>Buy</th><th>Sell</th><th>Strike</th><th>Buy</th><th>Sell</th></tr>')
-
-
-  for (let i = 0; i < GlobalVar.txoData.strikes.length; i++) {
-    let c = GlobalVar.txoData.callContracts[i]
-    let p = GlobalVar.txoData.putContracts[i]
-    let s = GlobalVar.txoData.strikes[i]
-
-    if (Math.abs(s - GlobalVar.txoData.spot) > 600)
-      continue
-
-    let lcBtn =  Utils.createPosiBtn(c, LS.LONG)
-    let scBtn = Utils.createPosiBtn(c, LS.SHORT)
-    let lpBtn = Utils.createPosiBtn(p, LS.LONG)
-    let spBtn =  Utils.createPosiBtn(p, LS.SHORT)
-
-    let tr = '<td>' + lcBtn + '</td><td>' + scBtn + '</td><th>' + s + '</td><td>' + lpBtn + '</td><td>' + spBtn + '</td>'
-
-    if (Math.abs(s - GlobalVar.txoData.spot) <= 25) {
-      tr = '<tr style="background-color:skyblue;">' + tr + '</tr>'
-    } else {
-      tr = '<tr>' + tr + '</tr>'
-    }
-
-    selector.append(tr)
-  }
-}
 
 class HomePage extends React.Component {
 
+  contractSelector:any = (<ContractGrid></ContractGrid>)
+
+  loadContracts() {
+    // let selector = $('#contractSelector')
+    // header
+    // selector.append('<tr><th>Buy</th><th>Sell</th><th>Strike</th><th>Buy</th><th>Sell</th></tr>')
+  
+  
+    for (let i = 0; i < GlobalVar.txoData.strikes.length; i++) {
+      let c = GlobalVar.txoData.callContracts[i]
+      let p = GlobalVar.txoData.putContracts[i]
+      let s = GlobalVar.txoData.strikes[i]
+  
+      if (Math.abs(s - GlobalVar.txoData.spot) > 600)
+        continue
+  
+      let lcBtn =  Utils.createPosiBtn(c, LS.LONG)
+      let scBtn = Utils.createPosiBtn(c, LS.SHORT)
+      let lpBtn = Utils.createPosiBtn(p, LS.LONG)
+      let spBtn =  Utils.createPosiBtn(p, LS.SHORT)
+  
+      // let tr = '<td>' + lcBtn + '</td><td>' + scBtn + '</td><th>' + s + '</td><td>' + lpBtn + '</td><td>' + spBtn + '</td>'
+      let row = <Row><Col>{lcBtn}</Col><Col>{scBtn}</Col><Col>{s}</Col><Col>{lpBtn}</Col><Col>{spBtn}</Col></Row>
+  
+      // if (Math.abs(s - GlobalVar.txoData.spot) <= 25) {
+      //   tr = '<tr style="background-color:skyblue;">' + tr + '</tr>'
+      // } else {
+      //   tr = '<tr>' + tr + '</tr>'
+      // }
+  
+      console.log(row)
+  
+      console.log(this.contractSelector)
+      console.log(this.contractSelector.props.children)
+
+      this.contractSelector.addRow(row)
+      // this.contractSelector.props.children.push(tr)
+  
+      // selector.append(tr)
+    }
+  }
+
   componentDidMount() {
     console.log('onload');
+
+    let home = this;
     // load raw data
     $.get(window.location.href.match(/^.*\//)[0]+"servlet/getTxoData", function (data) {
       GlobalVar.txoData = data.data;
@@ -85,7 +99,7 @@ class HomePage extends React.Component {
       $('#spot').val(GlobalVar.txoData.spot)
 
       // // init selector
-      loadContracts()
+      home.loadContracts()
 
       PostionStore.plotPosition()
     });
@@ -128,7 +142,8 @@ class HomePage extends React.Component {
     <div>
         <div id="fplot"></div>
         <div>
-            <table id="contractSelector"> </table>
+            {/* <table id="contractSelector"> </table> */}
+            {this.contractSelector}
         </div>
     </div>
     <br/>
