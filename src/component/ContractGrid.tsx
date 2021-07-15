@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{createRef} from 'react';
+import { render } from "react-dom";
 import $ from 'jquery';
 import { LS, PositionModel, CP, Contract } from '../model'
 import { PostionStore } from '../position_store'
@@ -9,38 +10,37 @@ import { Container, Row, Col } from 'react-grid-system';
 
 
 export default class ContractGrid extends React.Component<Props, {items:Array<any>}> {
-    // handleClick() {
-    //     console.log('this is:', this);
-    //   }
-    
-    //   render() {
-    //         return (
-
-    //             <table></table>
-    //     );
-    //   }
-
+    private stepInput: React.RefObject<HTMLInputElement>;
     constructor(props:any) {
+
       super(props);
       this.state = {
         items: [<Row><Col>Buy</Col><Col>Sell</Col><Col>Strike</Col><Col>Buy</Col><Col>Sell</Col></Row> ] 
       }
-
+      this.stepInput = React.createRef();
       props.children = [<Row><Col>Buy</Col><Col>Sell</Col><Col>Strike</Col><Col>Buy</Col><Col>Sell</Col></Row> ] 
 
     }
 
   
     addRow(row:React.ReactChild){
-      // this.state.items = this.state.items.concat(row)
-      this.props.children.push(row)
-      this.setState(this.state)
+      this.setState({
+        items: [...this.state.items, row]
+      })
     }
+
+    // next = () => {
+    //   if (!this.stepInput.current) {
+    //     return;
+    //   }
+  
+    //   this.stepInput.current.addRow();
+    // };
     
     render() {
-     return (<Container>
-       {this.props.children}
-       {React.Children.map(this.props.children, child => {
+     return (<Container /*ref={this.stepInput}*/>
+       {this.state.items}
+       {React.Children.map(this.state.items, child => {
             return child
          })}
        </Container>);
@@ -55,6 +55,12 @@ interface Props {
   // lpBtn: any;
   // spBtn: any;
   children?: React.ReactChild[];
+  ref?:any
+}
+
+interface State {
+  items:Array<any>
+  ref?: Date
 }
 
 // const Row: React.FC<Props> = ({ 

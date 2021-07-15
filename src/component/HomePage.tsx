@@ -43,7 +43,9 @@ function loadContracts() {
 
 class HomePage extends React.Component {
 
-  contractSelector:any = (<ContractGrid></ContractGrid>)
+  // contractSelector:any = (<ContractGrid></ContractGrid>)
+  contractSelector = React.createRef<ContractGrid>()
+  // contractSelector:any =  React.render(ContractGrid, document.getElementById('container'))
 
   loadContracts() {
     // let selector = $('#contractSelector')
@@ -76,9 +78,9 @@ class HomePage extends React.Component {
       console.log(row)
   
       console.log(this.contractSelector)
-      console.log(this.contractSelector.props.children)
+      // console.log(this.contractSelector.props.children)
 
-      this.contractSelector.addRow(row)
+      this.contractSelector.current.addRow(row)
       // this.contractSelector.props.children.push(tr)
   
       // selector.append(tr)
@@ -143,7 +145,7 @@ class HomePage extends React.Component {
         <div id="fplot"></div>
         <div>
             {/* <table id="contractSelector"> </table> */}
-            {this.contractSelector}
+            <ContractGrid ref={this.contractSelector}></ContractGrid>
         </div>
     </div>
     <br/>
