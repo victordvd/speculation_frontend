@@ -4,6 +4,7 @@ import { PostionStore } from './position_store'
 import { PositionModel, Contract, CP, LS } from './model'
 import Button from './component/Button'
 import GlobalVar from './Global';
+import { Col } from 'react-grid-system';
 
 export class Utils {
   static posiFn: any = {}
@@ -60,8 +61,11 @@ export class Utils {
 
   static createPosiBtn(p: any, ls: LS) {
     let m = Utils.parsePosition(p, ls)
+    const colStyle= {border: '1px solid black',
+    padding: '3px'}
+
     if (m.price == undefined)
-      return ''
+      return <Col style={colStyle}></Col>
 
     // let fnName = ls + p.type + p.strike + '_posifn'
     // Utils.posiFn[fnName] = () => {
@@ -70,11 +74,14 @@ export class Utils {
     // }
     // return '<button type="button" style="width:100%;" onclick="Utils.posiFn.' + fnName + '()">' + m.price + '</button> '
 
+    const style= {
+      width:'100%'
+    }
 
-    return <button onClick={() => {
+    return <Col style={colStyle}><button style={style} onClick={() => {
       m = Utils.parsePosition(p, ls)
       Utils.addPosition(m)
-    }}>    {m.price}</button>
+    }}>    {m.price}</button></Col>
   }
 
 
