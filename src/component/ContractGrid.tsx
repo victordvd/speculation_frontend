@@ -1,5 +1,4 @@
-import React, { createRef } from 'react';
-import { render } from "react-dom";
+import React from 'react';
 import $ from 'jquery';
 import { LS, PositionModel, CP, Contract } from '../model'
 import { PostionStore } from '../position_store'
@@ -25,6 +24,12 @@ export default class ContractGrid extends React.Component<Props, { items: Array<
   addRow(row: React.ReactChild) {
     this.setState({
       items: [...this.state.items, row]
+    })
+  }
+
+  clear(){
+    this.setState({
+      items: [<Row><Col>Buy</Col><Col>Sell</Col><Col>Strike</Col><Col>Buy</Col><Col>Sell</Col></Row>]
     })
   }
 

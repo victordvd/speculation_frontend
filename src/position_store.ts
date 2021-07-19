@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import {PositionModel,Contract,CP,LS} from './model'
-import {Utils} from './util'
+import { PositionModel, Contract, CP, LS } from './model'
+import { Utils } from './util'
 import GlobalVar from './Global'
-declare function functionPlot(arg: any): any;
+import functionPlot from "function-plot";
 
 export class PoistionCoefficient {
 
@@ -43,7 +43,7 @@ export class PostionStore {
 
     static removeAllPosition() {
         this.data = []
-        
+
         Utils.getPositionTable().find("tr:gt(0)").remove()
         PostionStore.plotPosition()
     }
@@ -243,16 +243,24 @@ export class PostionStore {
 
         console.log(fnSet)
 
+        let defaultCost = $('#defaultCost').val()
+
         //range ,fn
         let plotVO: Array<object> = []
 
         plotVO.push({ range: [0, Infinity], fn: '0', skipTip: true })
 
         fnSet.forEach((item) => {
+            let fn = item[1] + '*x+' + item[2]
+            // if (defaultCost > 0)
+            //     fn += '-' + defaultCost
+            // console.log(fn)
 
-            plotVO.push({ range: item[0], fn: item[1] + '*x+' + item[2]/*,closed: true*/ })
+            plotVO.push({ range: item[0], fn: fn /*,closed: true*/ })
         })
 
+        // plotVO.push({  fn: fnSet.length*-defaultCost+""/*,closed: true*/ })
+       
 
         return { annotations: annotations, data: plotVO }
     }

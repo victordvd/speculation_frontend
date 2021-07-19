@@ -7,51 +7,17 @@ import { Utils } from '../util'
 import GlobalVar from '../Global'
 import ContractGrid from './ContractGrid'
 import { Container, Row, Col } from 'react-grid-system';
-/*
-function loadContracts() {
-  let selector = $('#contractSelector')
-  // header
-  selector.append('<tr><th>Buy</th><th>Sell</th><th>Strike</th><th>Buy</th><th>Sell</th></tr>')
-
-
-  for (let i = 0; i < GlobalVar.txoData.strikes.length; i++) {
-    let c = GlobalVar.txoData.callContracts[i]
-    let p = GlobalVar.txoData.putContracts[i]
-    let s = GlobalVar.txoData.strikes[i]
-
-    if (Math.abs(s - GlobalVar.txoData.spot) > 600)
-      continue
-
-    let lcBtn =  Utils.createPosiBtn(c, LS.LONG)
-    let scBtn = Utils.createPosiBtn(c, LS.SHORT)
-    let lpBtn = Utils.createPosiBtn(p, LS.LONG)
-    let spBtn =  Utils.createPosiBtn(p, LS.SHORT)
-
-    let tr = '<td>' + lcBtn + '</td><td>' + scBtn + '</td><th>' + s + '</td><td>' + lpBtn + '</td><td>' + spBtn + '</td>'
-
-    if (Math.abs(s - GlobalVar.txoData.spot) <= 25) {
-      tr = '<tr style="background-color:skyblue;">' + tr + '</tr>'
-    } else {
-      tr = '<tr>' + tr + '</tr>'
-    }
-
-    selector.append(tr)
-  }
-}*/
-
+import ContractWeekCombo from './ContractWeekCombo'
 
 
 class HomePage extends React.Component {
 
-  // contractSelector:any = (<ContractGrid></ContractGrid>)
   contractSelector = React.createRef<ContractGrid>()
-  // contractSelector:any =  React.render(ContractGrid, document.getElementById('container'))
+  contractWeekCombo = React.createRef<ContractWeekCombo>()
 
-  loadContracts() {
-    // let selector = $('#contractSelector')
-    // header
-    // selector.append('<tr><th>Buy</th><th>Sell</th><th>Strike</th><th>Buy</th><th>Sell</th></tr>')
+  addContractRows() {
 
+    this.contractSelector.current.clear()
 
     for (let i = 0; i < GlobalVar.txoData.strikes.length; i++) {
       let c = GlobalVar.txoData.callContracts[i]
@@ -61,14 +27,12 @@ class HomePage extends React.Component {
       if (Math.abs(s - GlobalVar.txoData.spot) > 600)
         continue
 
-    
-
       let lcBtn = Utils.createPosiBtn(c, LS.LONG)
       let scBtn = Utils.createPosiBtn(c, LS.SHORT)
       let lpBtn = Utils.createPosiBtn(p, LS.LONG)
       let spBtn = Utils.createPosiBtn(p, LS.SHORT)
 
-  
+
       // let tr = '<td>' + lcBtn + '</td><td>' + scBtn + '</td><th>' + s + '</td><td>' + lpBtn + '</td><td>' + spBtn + '</td>'
       let row = <Row>{lcBtn}{scBtn}<Col>{s}</Col>{lpBtn}{spBtn}</Row>
 
@@ -78,10 +42,6 @@ class HomePage extends React.Component {
       //   tr = '<tr>' + tr + '</tr>'
       // }
 
-      console.log(row)
-
-      console.log(this.contractSelector)
-      // console.log(this.contractSelector.props.children)
 
       this.contractSelector.current.addRow(row)
       // this.contractSelector.props.children.push(tr)
@@ -90,9 +50,7 @@ class HomePage extends React.Component {
     }
   }
 
-  componentDidMount() {
-    console.log('onload');
-
+  loadTxoData() {
     let home = this;
     // load raw data
     $.get(window.location.href.match(/^.*\//)[0] + "servlet/getTxoData", function (data) {
@@ -103,13 +61,25 @@ class HomePage extends React.Component {
       console.log('spot:' + GlobalVar.txoData.spot)
       $('#spot').val(GlobalVar.txoData.spot)
 
-      // // init selector
-      home.loadContracts()
+
+      // set contract weeks
+      home.contractWeekCombo.current.clear()
+
+      GlobalVar.txoData.contractCodes.forEach((code:string) => {
+        home.contractWeekCombo.current.addContractCode(code)
+      });
+
+      // init selector
+      home.addContractRows()
 
       PostionStore.plotPosition()
     });
+  }
 
+  componentDidMount() {
+    console.log('onload');
 
+    this.loadTxoData()
 
     // let srcPos: Array<any> = JSON.parse(POS)
     // srcPos.forEach(element => {
@@ -133,12 +103,11 @@ class HomePage extends React.Component {
       PostionStore.plotPosition()
     })
 
-
-
     // CanvasBuilder.init()
   }
 
   render() {
+    const bodyStyle = {padding:"10px"}
     const plotStyle = { display: 'inline-block', 'vertical-align': 'top' }
     const selectorStyle = {
       display: 'inline-block', 'max-height': '400px', overflow: 'auto',
@@ -146,20 +115,29 @@ class HomePage extends React.Component {
     }
 
     return (
-      <div>
+      <div style={bodyStyle}>
         <div>
-          <button id="refreshBtn">Refresh</button>
-        </div>
-        <div>
+          <div>
+            <label>Spot</label>
+            <input id="spot" type="number" />
+          </div>
+
+          <div>
+            <label>Default Cost(tick)</label>
+            <input id="defaultCost" type="number" min="0" defaultValue="2" />
+          </div>
           <div id="fplot" style={plotStyle}></div>
+
           <div style={selectorStyle}>
+          <div>
+            <label>Contract Week</label>
+            <ContractWeekCombo ref={this.contractWeekCombo}></ContractWeekCombo>
+            </div>
             <ContractGrid ref={this.contractSelector}></ContractGrid>
           </div>
         </div>
         <br />
         <div>
-          <label>Spot</label>
-          <input id="spot" type="number" />
           <button id="addBtn">Add</button>
           <button id="clearBtn">Clear</button>
         </div>
