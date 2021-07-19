@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export default class ContractWeekCombo extends React.Component<Props, { value?:string,items: Array<any> }> {
+export default class ContractWeekCombo extends React.Component<Props, { value?: string, items: Array<any> }> {
   constructor(props: any) {
 
     super(props);
@@ -24,8 +24,14 @@ export default class ContractWeekCombo extends React.Component<Props, { value?:s
     })
   }
 
+  handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    console.log('contract cmb:' + event.target.value)
+    this.setState({ items: this.state.items, value: event.target.value });
+    this.props.onChangeImpl(this.state.value)
+  }
+
   render() {
-    return (<select value={this.state.value}  onChange={() => this.props.onChange(this.state.value)}>
+    return (<select value={this.state.value} onChange={this.handleChange}>
       {React.Children.map(this.state.items, child => {
         return child
       })}
@@ -35,7 +41,7 @@ export default class ContractWeekCombo extends React.Component<Props, { value?:s
 }
 
 interface Props {
-  onChange: Function;
+  onChangeImpl: Function;
   children?: React.ReactChild[];
   ref?: any
 }

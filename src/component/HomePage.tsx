@@ -130,7 +130,7 @@ class HomePage extends React.Component {
           <div style={selectorStyle}>
           <div>
             <label>Contract Week</label>
-            <ContractWeekCombo ref={this.contractWeekCombo} onChange={ this.loadTxoData}></ContractWeekCombo>
+            <ContractWeekCombo ref={this.contractWeekCombo} onChangeImpl={ this.loadTxoData}></ContractWeekCombo>
             </div>
             <ContractGrid ref={this.contractSelector}></ContractGrid>
           </div>
