@@ -42,6 +42,10 @@ canvas{
 
 }
 
+label{
+    margin-right: 10px;
+}
+
 table {
     border: 1px solid black;
     overflow: scroll;

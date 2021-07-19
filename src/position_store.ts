@@ -252,9 +252,9 @@ export class PostionStore {
 
         fnSet.forEach((item) => {
             let fn = item[1] + '*x+' + item[2]
-            // if (defaultCost > 0)
-            //     fn += '-' + defaultCost
-            // console.log(fn)
+            if (defaultCost > 0)
+                fn += '-' + Number(defaultCost)*fnSet.length
+            console.log(fn)
 
             plotVO.push({ range: item[0], fn: fn /*,closed: true*/ })
         })

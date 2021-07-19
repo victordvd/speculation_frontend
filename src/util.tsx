@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import React, { ButtonHTMLAttributes } from 'react';
+import React from 'react';
 import { PostionStore } from './position_store'
 import { PositionModel, Contract, CP, LS } from './model'
 import Button from './component/Button'

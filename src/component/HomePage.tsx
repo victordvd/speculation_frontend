@@ -16,7 +16,6 @@ class HomePage extends React.Component {
   contractWeekCombo = React.createRef<ContractWeekCombo>()
 
   addContractRows() {
-
     this.contractSelector.current.clear()
 
     for (let i = 0; i < GlobalVar.txoData.strikes.length; i++) {
@@ -50,12 +49,12 @@ class HomePage extends React.Component {
     }
   }
 
-  loadTxoData() {
+  loadTxoData(contractWeek?:string) {
     let home = this;
     // load raw data
-    $.get(window.location.href.match(/^.*\//)[0] + "servlet/getTxoData", function (data) {
+    $.get(window.location.href.match(/^.*\//)[0] + "servlet/getTxoData",{contractWeek:contractWeek}, function (data) {
       GlobalVar.txoData = data.data;
-      console.log('load data:' + GlobalVar.txoData)
+      console.log('load data:' + GlobalVar.txoData+' contractWeek:'+contractWeek)
 
       // set spot
       console.log('spot:' + GlobalVar.txoData.spot)
@@ -107,7 +106,7 @@ class HomePage extends React.Component {
   }
 
   render() {
-    const bodyStyle = {padding:"10px"}
+    const bodyStyle = {padding:"20px"}
     const plotStyle = { display: 'inline-block', 'vertical-align': 'top' }
     const selectorStyle = {
       display: 'inline-block', 'max-height': '400px', overflow: 'auto',
@@ -123,7 +122,7 @@ class HomePage extends React.Component {
           </div>
 
           <div>
-            <label>Default Cost(tick)</label>
+            <label>Default Cost(tick/lot)</label>
             <input id="defaultCost" type="number" min="0" defaultValue="2" />
           </div>
           <div id="fplot" style={plotStyle}></div>
@@ -131,7 +130,7 @@ class HomePage extends React.Component {
           <div style={selectorStyle}>
           <div>
             <label>Contract Week</label>
-            <ContractWeekCombo ref={this.contractWeekCombo}></ContractWeekCombo>
+            <ContractWeekCombo ref={this.contractWeekCombo} onChange={ this.loadTxoData}></ContractWeekCombo>
             </div>
             <ContractGrid ref={this.contractSelector}></ContractGrid>
           </div>
