@@ -8,6 +8,8 @@ export default class ContractWeekCombo extends React.Component<Props, { value?: 
     this.state = {
       items: []
     }
+
+    // this.handleChange = this.handleChange.bind(this);
     // props.children = [<Row><Col>Buy</Col><Col>Sell</Col><Col>Strike</Col><Col>Buy</Col><Col>Sell</Col></Row>]
 
   }
@@ -27,11 +29,11 @@ export default class ContractWeekCombo extends React.Component<Props, { value?: 
   handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
     console.log('contract cmb:' + event.target.value)
     this.setState({ items: this.state.items, value: event.target.value });
-    this.props.onChangeImpl(this.state.value)
+    this.props.onChangeImpl(event.target.value)
   }
 
   render() {
-    return (<select value={this.state.value} onChange={this.handleChange}>
+    return (<select value={this.state.value} onChange={e=>this.handleChange.apply(this,[e])}>
       {React.Children.map(this.state.items, child => {
         return child
       })}
@@ -42,6 +44,7 @@ export default class ContractWeekCombo extends React.Component<Props, { value?: 
 
 interface Props {
   onChangeImpl: Function;
+  // onChange:Function
   children?: React.ReactChild[];
   ref?: any
 }

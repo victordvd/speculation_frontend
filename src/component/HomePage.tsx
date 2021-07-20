@@ -49,8 +49,8 @@ class HomePage extends React.Component {
     }
   }
 
-  loadTxoData(contractWeek?:string) {
-    let home = this;
+  loadTxoData(home:any, contractWeek?:string) {
+    // let home = this;
     // load raw data
     $.get(window.location.href.match(/^.*\//)[0] + "servlet/getTxoData",{contractWeek:contractWeek}, function (data) {
       GlobalVar.txoData = data.data;
@@ -78,7 +78,7 @@ class HomePage extends React.Component {
   componentDidMount() {
     console.log('onload');
 
-    this.loadTxoData()
+    this.loadTxoData(this)
 
     // let srcPos: Array<any> = JSON.parse(POS)
     // srcPos.forEach(element => {
@@ -112,6 +112,7 @@ class HomePage extends React.Component {
       display: 'inline-block', 'max-height': '400px', overflow: 'auto',
       width: '500px', padding: '5px', border: '1px solid black'
     }
+    let home = this
 
     return (
       <div style={bodyStyle}>
@@ -130,7 +131,7 @@ class HomePage extends React.Component {
           <div style={selectorStyle}>
           <div>
             <label>Contract Week</label>
-            <ContractWeekCombo ref={this.contractWeekCombo} onChangeImpl={ this.loadTxoData}></ContractWeekCombo>
+            <ContractWeekCombo ref={this.contractWeekCombo} onChangeImpl={(v:string)=> home.loadTxoData.apply(null,[home,v])}></ContractWeekCombo>
             </div>
             <ContractGrid ref={this.contractSelector}></ContractGrid>
           </div>
