@@ -23,8 +23,8 @@ class HomePage extends React.Component {
       let p = GlobalVar.txoData.putContracts[i]
       let s = GlobalVar.txoData.strikes[i]
 
-      if (Math.abs(s - GlobalVar.txoData.spot) > 600)
-        continue
+      // if (Math.abs(s - GlobalVar.txoData.spot) > 600)
+      //   continue
 
       let lcBtn = Utils.createPosiBtn(c, LS.LONG)
       let scBtn = Utils.createPosiBtn(c, LS.SHORT)
@@ -33,17 +33,14 @@ class HomePage extends React.Component {
 
 
       // let tr = '<td>' + lcBtn + '</td><td>' + scBtn + '</td><th>' + s + '</td><td>' + lpBtn + '</td><td>' + spBtn + '</td>'
-      let row = <Row>{lcBtn}{scBtn}<Col>{s}</Col>{lpBtn}{spBtn}</Row>
+      
+      let rowStyle = {}
+      if (Math.abs(s - GlobalVar.txoData.spot) <= 25) {
+        rowStyle = {'background-color':'skyblue'}
+      }
 
-      // if (Math.abs(s - GlobalVar.txoData.spot) <= 25) {
-      //   tr = '<tr style="background-color:skyblue;">' + tr + '</tr>'
-      // } else {
-      //   tr = '<tr>' + tr + '</tr>'
-      // }
-
-
+      let row = <Row style={rowStyle}>{lcBtn}{scBtn}<Col>{s}</Col>{lpBtn}{spBtn}</Row>
       this.contractSelector.current.addRow(row)
-      // this.contractSelector.props.children.push(tr)
 
       // selector.append(tr)
     }
@@ -54,7 +51,9 @@ class HomePage extends React.Component {
     // load raw data
     $.get(window.location.href.match(/^.*\//)[0] + "servlet/getTxoData",{contractWeek:contractWeek}, function (data) {
       GlobalVar.txoData = data.data;
-      console.log('load data:' + GlobalVar.txoData+' contractWeek:'+contractWeek)
+      console.log('load data contractWeek:'+contractWeek+' target week: '+GlobalVar.txoData.targetContractCode)
+      console.log( GlobalVar.txoData)
+      
 
       // set spot
       console.log('spot:' + GlobalVar.txoData.spot)
@@ -67,6 +66,8 @@ class HomePage extends React.Component {
       GlobalVar.txoData.contractCodes.forEach((code:string) => {
         home.contractWeekCombo.current.addContractCode(code)
       });
+
+      home.contractWeekCombo.current.setContractCode(GlobalVar.txoData.targetContractCode)
 
       // init selector
       home.addContractRows()

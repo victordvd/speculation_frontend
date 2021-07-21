@@ -20,6 +20,13 @@ export default class ContractWeekCombo extends React.Component<Props, { value?: 
     })
   }
 
+  setContractCode(weekCode: string) {
+    this.setState({
+      items: [...this.state.items], value:weekCode
+    })
+    // this.props.onChangeImpl(weekCode)
+  }
+
   clear() {
     this.setState({
       items: []
