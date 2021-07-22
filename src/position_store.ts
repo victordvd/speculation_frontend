@@ -247,20 +247,29 @@ export class PostionStore {
 
         //range ,fn
         let plotVO: Array<object> = []
+        let red = 'rgb(255, 0, 0)'
+        let blue = 'rgb(0, 0, 255)'
+
 
         plotVO.push({ range: [0, Infinity], fn: '0', skipTip: true })
 
-        fnSet.forEach((item) => {
+        fnSet.forEach((item, i) => {
             let fn = item[1] + '*x+' + item[2]
             if (defaultCost > 0)
-                fn += '-' + Number(defaultCost)*fnSet.length
+                fn += '-' + Number(defaultCost) * fnSet.length
             console.log(fn)
+            let color = red
 
-            plotVO.push({ range: item[0], fn: fn /*,closed: true*/ })
+            if (i % 2 === 0)
+                color = red
+            else
+                color = blue
+
+            plotVO.push({ range: item[0], fn: fn, color: color/*,closed: true*/ })
         })
 
         // plotVO.push({  fn: fnSet.length*-defaultCost+""/*,closed: true*/ })
-       
+
 
         return { annotations: annotations, data: plotVO }
     }
