@@ -37,6 +37,16 @@ export class PostionStore {
         return this.data
     }
 
+    static getDataJson() {
+        let positions: any = []
+
+        this.data.forEach((p: PositionModel) => {
+            positions.push({ contract: p.contract, contractWeek:p.contractWeek,ls: p.ls, cp: p.cp, strike: p.strike, amount: p.amount, price: p.price })
+        })
+
+        return JSON.stringify(positions)
+    }
+
     static addPosition(p: PositionModel) {
         this.data.push(p)
     }

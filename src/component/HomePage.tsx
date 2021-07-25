@@ -33,10 +33,10 @@ class HomePage extends React.Component {
 
 
       // let tr = '<td>' + lcBtn + '</td><td>' + scBtn + '</td><th>' + s + '</td><td>' + lpBtn + '</td><td>' + spBtn + '</td>'
-      
+
       let rowStyle = {}
-      if (Math.abs(s - GlobalVar.txoData.spot) <= 25) {
-        rowStyle = {'background-color':'skyblue'}
+      if (Math.abs(s - GlobalVar.txoData.spot) <= 50) {
+        rowStyle = { 'background-color': 'skyblue' }
       }
 
       let row = <Row style={rowStyle}>{lcBtn}{scBtn}<Col>{s}</Col>{lpBtn}{spBtn}</Row>
@@ -46,14 +46,14 @@ class HomePage extends React.Component {
     }
   }
 
-  loadTxoData(home:any, contractWeek?:string) {
+  loadTxoData(home: any, contractWeek?: string) {
     // let home = this;
     // load raw data
-    $.get(window.location.href.match(/^.*\//)[0] + "servlet/getTxoData",{contractWeek:contractWeek}, function (data) {
+    $.get(window.location.href.match(/^.*\//)[0] + "servlet/getTxoData", { contractWeek: contractWeek }, function (data) {
       GlobalVar.txoData = data.data;
-      console.log('load data contractWeek:'+contractWeek+' target week: '+GlobalVar.txoData.targetContractCode)
-      console.log( GlobalVar.txoData)
-      
+      console.log('load data contractWeek:' + contractWeek + ' target week: ' + GlobalVar.txoData.targetContractCode)
+      console.log(GlobalVar.txoData)
+
 
       // set spot
       console.log('spot:' + GlobalVar.txoData.spot)
@@ -63,7 +63,7 @@ class HomePage extends React.Component {
       // set contract weeks
       home.contractWeekCombo.current.clear()
 
-      GlobalVar.txoData.contractCodes.forEach((code:string) => {
+      GlobalVar.txoData.contractCodes.forEach((code: string) => {
         home.contractWeekCombo.current.addContractCode(code)
       });
 
@@ -99,6 +99,11 @@ class HomePage extends React.Component {
 
     })
 
+    $('#toJsonBtn').click(() => {
+      let json = PostionStore.getDataJson()
+      window.alert(json)
+    })
+
     $('#spot').change(() => {
       PostionStore.plotPosition()
     })
@@ -107,7 +112,7 @@ class HomePage extends React.Component {
   }
 
   render() {
-    const bodyStyle = {padding:"20px"}
+    const bodyStyle = { padding: "20px" }
     const plotStyle = { display: 'inline-block', 'vertical-align': 'top' }
     const selectorStyle = {
       display: 'inline-block', 'max-height': '400px', overflow: 'auto',
@@ -130,9 +135,11 @@ class HomePage extends React.Component {
           <div id="fplot" style={plotStyle}></div>
 
           <div style={selectorStyle}>
-          <div>
-            <label>Contract Week</label>
-            <ContractWeekCombo ref={this.contractWeekCombo} onChangeImpl={(v:string)=> home.loadTxoData.apply(null,[home,v])}></ContractWeekCombo>
+            <div>
+              <div>
+                <label>Contract Week</label>
+                <ContractWeekCombo ref={this.contractWeekCombo} onChangeImpl={(v: string) => home.loadTxoData.apply(null, [home, v])}></ContractWeekCombo>
+              </div>
             </div>
             <ContractGrid ref={this.contractSelector}></ContractGrid>
           </div>
@@ -141,6 +148,7 @@ class HomePage extends React.Component {
         <div>
           <button id="addBtn">Add</button>
           <button id="clearBtn">Clear</button>
+          <button id="toJsonBtn">To JSON</button>
         </div>
         <div>
           <table id="positionTable">

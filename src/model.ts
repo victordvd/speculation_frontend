@@ -13,6 +13,7 @@ export class PositionModel {
   enabled: boolean
   
   contract: Contract
+  contractWeek: string
   ls: LS
   strike: number
   cp: CP
