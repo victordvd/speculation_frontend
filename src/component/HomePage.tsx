@@ -8,12 +8,13 @@ import GlobalVar from '../Global'
 import ContractGrid from './ContractGrid'
 import { Container, Row, Col } from 'react-grid-system';
 import ContractWeekCombo from './ContractWeekCombo'
-
+import Popup from './Popup';
 
 class HomePage extends React.Component {
 
   contractSelector = React.createRef<ContractGrid>()
   contractWeekCombo = React.createRef<ContractWeekCombo>()
+  jsonPopup = React.createRef<Popup>()
 
   addContractRows() {
     this.contractSelector.current.clear()
@@ -104,6 +105,10 @@ class HomePage extends React.Component {
       window.alert(json)
     })
 
+    $('#loadJsonBtn').click(() => {
+        this.jsonPopup.current.handleOpenModal()
+    })
+
     $('#spot').change(() => {
       PostionStore.plotPosition()
     })
@@ -122,6 +127,7 @@ class HomePage extends React.Component {
 
     return (
       <div style={bodyStyle}>
+        <Popup ref={this.jsonPopup}>popup</Popup>
         <div>
           <div>
             <label>Spot</label>
@@ -149,6 +155,7 @@ class HomePage extends React.Component {
           <button id="addBtn">Add</button>
           <button id="clearBtn">Clear</button>
           <button id="toJsonBtn">To JSON</button>
+          <button id="loadJsonBtn">Load JSON</button>
         </div>
         <div>
           <table id="positionTable">

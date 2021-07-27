@@ -35,16 +35,29 @@ export class Utils {
   }
 
   /* [{"ls":"L","contract":{"type":"C","strike":18200,"bid":47.5,"ask":48},"price":48},
-  {"ls":"S","contract":{"type":"C","strike":18300,"bid":33.5,"ask":35.5},"price":33.5}] */
+  {"ls":"S","contract":{"type":"C","strike":18300,"bid":33.5,"ask":35.5},"price":33.5}] 
+  
+  {"contract":"TXO","ls":"Long","cp":"Call","strike":14200,"amount":1,"price":3060},
+  */
   static parsePositionForRaw(o: any) {
-    let ls = (o.ls == 'L') ? LS.LONG : LS.SHORT
+    let ls = (o.ls == 'Long') ? LS.LONG : LS.SHORT
     let contract = o.contract
-    let type = (contract.type == 'C') ? CP.CALL : CP.PUT
+    let type = (contract.type == 'Call') ? CP.CALL : CP.PUT
     let strike = contract.strike
     let price = o.price
+    let amount = o.amount
 
-    return PositionModel.getTXOInstance(ls, type, Contract.TXO, strike, 1, price)
+    return PositionModel.getTXOInstance(ls, type, Contract.TXO, strike, amount, price)
   }
+  // static parsePositionForRaw(o: any) {
+  //   let ls = (o.ls == 'L') ? LS.LONG : LS.SHORT
+  //   let contract = o.contract
+  //   let type = (contract.type == 'C') ? CP.CALL : CP.PUT
+  //   let strike = contract.strike
+  //   let price = o.price
+
+  //   return PositionModel.getTXOInstance(ls, type, Contract.TXO, strike, 1, price)
+  // }
 
   static parsePosition(o: any, ls: LS) {
     let type = (o.type == 'C') ? CP.CALL : CP.PUT
