@@ -12,13 +12,13 @@ export default class Popup extends React.Component<{
 
     super(props);
     this.state = {
-      isOpen: false,
+      isOpen: false
       // items: [<Row><Col>Buy</Col><Col>Sell</Col><Col>Strike</Col><Col>Buy</Col><Col>Sell</Col></Row>]
-      json: 'json...'
     }
 
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   handleOpenModal = () => {
@@ -30,6 +30,7 @@ export default class Popup extends React.Component<{
   };
 
   loadJson = () => {
+    console.log('json: '+this.state.json)
     let obj = JSON.parse(this.state.json)
     obj.forEach((element: any) => {
       let pos = Utils.parsePositionForRaw(element)
@@ -37,13 +38,14 @@ export default class Popup extends React.Component<{
     });
   }
 
-  handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) { this.setState({ isOpen: this.state.isOpen, json: event.target.value }); }
+  handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+     this.setState({ isOpen: this.state.isOpen, json: event.target.value }); }
 
   render() {
     const txtStyle = { 'min-height': '500px', width: '100%' }
 
     return (<Modal isOpen={this.state.isOpen} >
-      <textarea style={txtStyle} value={this.state.json} onChange={this.handleChange} />
+      <textarea style={txtStyle} defaultValue="json" value={this.state.json} onChange={this.handleChange} />
       <button onClick={this.loadJson}>Load</button>
       <button onClick={this.handleCloseModal}>
         Close

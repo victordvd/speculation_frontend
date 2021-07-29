@@ -41,7 +41,7 @@ export class PostionStore {
         let positions: any = []
 
         this.data.forEach((p: PositionModel) => {
-            positions.push({ contract: p.contract, contractWeek:p.contractWeek,ls: p.ls, cp: p.cp, strike: p.strike, amount: p.amount, price: p.price })
+            positions.push({ contract: p.contract, contractWeek: p.contractWeek, ls: p.ls, cp: p.cp, strike: p.strike, amount: p.amount, price: p.price })
         })
 
         return JSON.stringify(positions)
@@ -110,6 +110,9 @@ export class PostionStore {
 
         if (spot)
             fpVO.annotations.push({ x: spot, text: 'spot: ' + spot })
+
+
+        console.log(fpVO)
 
         functionPlot(fpVO)
     }
