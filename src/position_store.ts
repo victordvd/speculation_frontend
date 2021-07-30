@@ -254,7 +254,7 @@ export class PostionStore {
         })
 
 
-        console.log(fnSet)
+        console.log('fnSet'+fnSet)
 
         let defaultCost = $('#defaultCost').val()
 

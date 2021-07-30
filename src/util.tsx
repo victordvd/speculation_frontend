@@ -41,9 +41,9 @@ export class Utils {
   */
   static parsePositionForRaw(o: any) {
     let ls = (o.ls == 'Long') ? LS.LONG : LS.SHORT
-    let contract = o.contract
-    let type = (contract.type == 'Call') ? CP.CALL : CP.PUT
-    let strike = contract.strike
+    // let contract = o.contract
+    let type = (o.cp == 'Call') ? CP.CALL : CP.PUT
+    let strike = o.strike
     let price = o.price
     let amount = o.amount
 

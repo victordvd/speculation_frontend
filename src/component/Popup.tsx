@@ -33,6 +33,8 @@ export default class Popup extends React.Component<{
     console.log('json: '+this.state.json)
     let obj = JSON.parse(this.state.json)
     obj.forEach((element: any) => {
+      console.log('el')
+      console.log(element)
       let pos = Utils.parsePositionForRaw(element)
       Utils.addPosition(pos)
     });
