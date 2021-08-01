@@ -30,7 +30,7 @@ export default class Popup extends React.Component<{
   };
 
   loadJson = () => {
-    console.log('json: '+this.state.json)
+    console.log('loadjson: '+this.state.json)
     let obj = JSON.parse(this.state.json)
     obj.forEach((element: any) => {
       console.log('el')
@@ -38,6 +38,8 @@ export default class Popup extends React.Component<{
       let pos = Utils.parsePositionForRaw(element)
       Utils.addPosition(pos)
     });
+    console.log('close pop')
+    this.setState({ isOpen: false });
   }
 
   handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {

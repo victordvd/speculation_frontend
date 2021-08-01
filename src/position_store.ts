@@ -44,6 +44,8 @@ export class PostionStore {
             positions.push({ contract: p.contract, contractWeek: p.contractWeek, ls: p.ls, cp: p.cp, strike: p.strike, amount: p.amount, price: p.price })
         })
 
+        navigator.clipboard.writeText(JSON.stringify(positions))
+
         return JSON.stringify(positions)
     }
 
