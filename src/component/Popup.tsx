@@ -1,6 +1,7 @@
 import React from "react";
 import Modal from 'react-modal';
 import { Utils } from '../util'
+import { PostionStore } from '../position_store'
 
 export default class Popup extends React.Component<{
   isOpen?: boolean
@@ -30,15 +31,13 @@ export default class Popup extends React.Component<{
   };
 
   loadJson = () => {
-    console.log('loadjson: '+this.state.json)
+    PostionStore.removeAllPosition()
+
     let obj = JSON.parse(this.state.json)
     obj.forEach((element: any) => {
-      console.log('el')
-      console.log(element)
       let pos = Utils.parsePositionForRaw(element)
       Utils.addPosition(pos)
     });
-    console.log('close pop')
     this.setState({ isOpen: false });
   }
 
