@@ -104,11 +104,11 @@ class HomePage extends React.Component {
       let json = PostionStore.getDataJson()
       window.alert(json)
 
-      this.copyTextToClipboard(json) 
+      this.copyTextToClipboard(json)
     })
 
     $('#loadJsonBtn').click(() => {
-        this.jsonPopup.current.handleOpenModal()
+      this.jsonPopup.current.handleOpenModal()
     })
 
     $('#spot').change(() => {
@@ -118,19 +118,19 @@ class HomePage extends React.Component {
     // CanvasBuilder.init()
   }
 
-  fallbackCopyTextToClipboard(text:string) {
+  fallbackCopyTextToClipboard(text: string) {
     var textArea = document.createElement("textarea");
     textArea.value = text;
-    
+
     // Avoid scrolling to bottom
     textArea.style.top = "0";
     textArea.style.left = "0";
     textArea.style.position = "fixed";
-  
+
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
-  
+
     try {
       var successful = document.execCommand('copy');
       var msg = successful ? 'successful' : 'unsuccessful';
@@ -138,17 +138,17 @@ class HomePage extends React.Component {
     } catch (err) {
       console.error('Fallback: Oops, unable to copy', err);
     }
-  
+
     document.body.removeChild(textArea);
   }
-  copyTextToClipboard(text:string) {
+  copyTextToClipboard(text: string) {
     if (!navigator.clipboard) {
       this.fallbackCopyTextToClipboard(text);
       return;
     }
-    navigator.clipboard.writeText(text).then(function() {
+    navigator.clipboard.writeText(text).then(function () {
       console.log('Async: Copying to clipboard was successful!');
-    }, function(err) {
+    }, function (err) {
       console.error('Async: Could not copy text: ', err);
     });
   }
@@ -157,9 +157,11 @@ class HomePage extends React.Component {
     const bodyStyle = { padding: "20px" }
     const plotStyle = { display: 'inline-block', 'vertical-align': 'top' }
     const selectorStyle = {
-      display: 'inline-block', 'max-height': '400px', overflow: 'auto',
+      display: 'inline-block', 'max-height': '400px', height:'400px', overflow: 'hidden',
       width: '500px', padding: '5px', border: '1px solid black'
     }
+
+    const overflowStyle = {overflow: 'scroll',height:'370px'}
     let home = this
 
     return (
@@ -177,14 +179,14 @@ class HomePage extends React.Component {
           </div>
           <div id="fplot" style={plotStyle}></div>
 
-          <div style={selectorStyle}>
+          <div style={selectorStyle} >
             <div>
-              <div>
-                <label>Contract Week</label>
-                <ContractWeekCombo ref={this.contractWeekCombo} onChangeImpl={(v: string) => home.loadTxoData.apply(null, [home, v])}></ContractWeekCombo>
-              </div>
+              <label>Contract Week</label>
+              <ContractWeekCombo ref={this.contractWeekCombo} onChangeImpl={(v: string) => home.loadTxoData.apply(null, [home, v])}></ContractWeekCombo>
+            </div >
+            <div style={overflowStyle}>
+              <ContractGrid ref={this.contractSelector}></ContractGrid>
             </div>
-            <ContractGrid ref={this.contractSelector}></ContractGrid>
           </div>
         </div>
         <br />
