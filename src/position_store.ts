@@ -2,7 +2,9 @@ import $ from 'jquery';
 import { PositionModel, Contract, CP, LS } from './model'
 import { Utils } from './util'
 import GlobalVar from './Global'
-import functionPlot from "function-plot";
+import functionPlot from "function-plot"
+var iv = require("implied-volatility");
+var bs = require("black-scholes");
 
 export class PoistionCoefficient {
 
@@ -101,7 +103,7 @@ export class PostionStore {
             yAxis: { label: 'Profit (tick)' },
             xAxis: { domain: [GlobalVar.txoData.spot - 500, GlobalVar.txoData.spot + 500], label: 'Settle Price' },
             data: fnEtStk.data,
-            annotations: fnEtStk.annotations
+            annotations: fnEtStk.annotations // vertical lines of strike price
             // data: [
             //   {fn: 'x^2'},
             //   {fn: '3x'}
@@ -119,55 +121,76 @@ export class PostionStore {
         functionPlot(fpVO)
     }
 
+    /** add profit function for each position in slope intercept form */
     static getAnalyzeFn() {
 
         let strikes: Set<number> = new Set
 
-        //[{strike,[m1,b1],[m2,b2]}]
+        // [{strike,[m1,b1],[m2,b2]}]
         let posiFnVO: Array<any> = []
+
+        // [strike, B-S fn]]
+        let strikeExprFnMap: Map<number,(ftx:number)=>number> = new Map()
+
+        let days2Expr = Number($('#days2Expr').val())/252
+        let defaultCost = $('#defaultCost').val() as number
 
         this.data.forEach((pos) => {
 
             let hRange: Array<any> = [0, pos.strike]
             let sRange: Array<any> = [pos.strike, Infinity]
 
-            //multi
-            let m1: number
-            let b1: number
+            // line of profit/loss stop
+            let m1, b1: number
 
-            let m2: number
-            let b2: number
+            // line of P/L change
+            let m2, b2: number
+            
+            let ls:number,cp:number
+            let cpStr:string
+            let riskFreeRate = .015
 
-            let ls
-            let cp
-
-            if (pos.contract === Contract.TXO) {
+            let exprXYs:Array<any> = []
+            
+            if (pos.contract === Contract.TXO) { 
                 if (pos.ls === LS.LONG)
                     ls = -1
                 else
                     ls = 1
 
-                if (pos.cp === CP.CALL)
+                if (pos.cp === CP.CALL){
                     cp = 1
-                else
+                    cpStr = 'call'
+                }else{
                     cp = -1
+                    cpStr = 'put'
+                }
+
+                let impVola = iv.getImpliedVolatility(pos.price, GlobalVar.txoData.spot, pos.strike, days2Expr, riskFreeRate, cpStr)
 
                 if (cp === 1) {
-
                     m1 = 0
                     b1 = (ls * pos.price) * pos.amount
                     m2 = -ls * cp * pos.amount
                     b2 = (ls * (pos.price) + ls * cp * pos.strike) * pos.amount
                 } else {
-
                     m1 = -ls * cp * pos.amount
                     b1 = (ls * (pos.price) + ls * cp * pos.strike) * pos.amount
                     m2 = 0
                     b2 = (ls * pos.price) * pos.amount
                 }
 
+                // set data points of "days-to-expiry"
+                let exprFn = function (ftx:number) {
+                    let exprPrice = bs.blackScholes(ftx, pos.strike, days2Expr, impVola, riskFreeRate, cpStr) 
+                     
+                    return (-ls * (exprPrice-pos.price) -defaultCost) * pos.amount // substract cost
+                }    
+                strikeExprFnMap.set(pos.strike, exprFn)
+
                 strikes.add(pos.strike)
                 posiFnVO.push([pos.contract, pos.strike, [m1, b1], [m2, b2]])
+                
             } else {
 
                 if (pos.ls === LS.LONG) {
@@ -182,15 +205,12 @@ export class PostionStore {
 
                 posiFnVO.push([pos.contract, [m1, b1]])
             }
-
-
-
         })
 
-        return this.addPosiFunc(Array.from(strikes), posiFnVO)
+        return this.addPosiFunc(Array.from(strikes), posiFnVO, strikeExprFnMap)
     }
 
-    static addPosiFunc(strikes: Array<number>, posiFnVO: Array<Array<any>>) {
+    static addPosiFunc(strikes: Array<number>, posiFnVO: Array<Array<any>>, strikeExprFnMap: Map<number,(ftx:number)=>number>) {
 
         strikes.push(Infinity)
         strikes.sort((a, b) => { return a - b })
@@ -255,10 +275,9 @@ export class PostionStore {
 
         })
 
-
         console.log('fnSet'+fnSet)
 
-        let defaultCost = $('#defaultCost').val()
+        let defaultCost = $('#defaultCost').val() as number
 
         //range ,fn
         let plotVO: Array<object> = []
@@ -268,6 +287,7 @@ export class PostionStore {
 
         plotVO.push({ range: [0, Infinity], fn: '0', skipTip: true })
 
+        // build fn str namely 'ax+b'
         fnSet.forEach((item, i) => {
             let fn = item[1] + '*x+' + item[2]
             if (defaultCost > 0)
@@ -285,6 +305,16 @@ export class PostionStore {
 
         // plotVO.push({  fn: fnSet.length*-defaultCost+""/*,closed: true*/ })
 
+        if(strikeExprFnMap.size>0){
+            plotVO.push({
+                graphType: 'polyline',
+                fn: function (scope:any) {
+                  var ftx = scope.x
+                  let fns = Array.from(strikeExprFnMap.values())
+                  return fns.map(fn=>fn(ftx)).reduce((partialSum, a) => partialSum + a, 0)
+                }
+            })
+        }
 
         return { annotations: annotations, data: plotVO }
     }

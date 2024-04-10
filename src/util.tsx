@@ -97,7 +97,27 @@ export class Utils {
     }}>    {m.price}</button></Col>
   }
 
+  static getDays2ExpiryDate(contract_month:string){
+    try{
+        let year = Number(contract_month.substring(0,4))
+        let month = Number(contract_month.substring(4,6))-1 // js month start at 0
 
+        // 202401W2
+        let first_day = new Date(year, month, 1)
+        first_day.setDate(first_day.getDate() + (4-first_day.getDay()) % 7)
+
+        if(contract_month.length==8){
+            let week = Number(contract_month.substring(7,8))
+            first_day.setDate(first_day.getDate() + (week-1)*7)
+        }else{
+            first_day.setDate(first_day.getDate() + 14)
+        }
+        return Math.floor((first_day.getTime()-new Date().getTime()) / (1000 * 3600 * 24))
+    }catch(e){
+        console.log('error:',contract_month)
+        throw e
+    }
+}
 
 
 }

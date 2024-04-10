@@ -55,7 +55,6 @@ class HomePage extends React.Component {
       console.log('load data contractWeek:' + contractWeek + ' target week: ' + GlobalVar.txoData.targetContractCode)
       console.log(GlobalVar.txoData)
 
-
       // set spot
       console.log('spot:' + GlobalVar.txoData.spot)
       $('#spot').val(GlobalVar.txoData.spot)
@@ -69,6 +68,11 @@ class HomePage extends React.Component {
       });
 
       home.contractWeekCombo.current.setContractCode(GlobalVar.txoData.targetContractCode)
+
+      // calculate days to expriation
+      let days2Expr = String(Utils.getDays2ExpiryDate(GlobalVar.txoData.targetContractCode))
+      $('#days2Expr').val(days2Expr)
+      
 
       // init selector
       home.addContractRows()
@@ -115,6 +119,9 @@ class HomePage extends React.Component {
       PostionStore.plotPosition()
     })
 
+    $('#days2Expr').change(() => {
+      PostionStore.plotPosition()
+    })
     // CanvasBuilder.init()
   }
 
@@ -172,10 +179,13 @@ class HomePage extends React.Component {
             <label>Spot</label>
             <input id="spot" type="number" />
           </div>
-
           <div>
             <label>Default Cost(tick/lot)</label>
-            <input id="defaultCost" type="number" min="0" defaultValue="2" />
+            <input id="defaultCost" type="number" min="0" defaultValue="1" />
+          </div>
+          <div>
+            <label>Days to Expiration</label>
+            <input id="days2Expr" type="number" />
           </div>
           <div id="fplot" style={plotStyle}></div>
 
