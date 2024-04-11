@@ -119,6 +119,10 @@ class HomePage extends React.Component {
       PostionStore.plotPosition()
     })
 
+    $('#riskFreeRate').change(() => {
+      PostionStore.plotPosition()
+    })
+
     $('#days2Expr').change(() => {
       PostionStore.plotPosition()
     })
@@ -177,15 +181,19 @@ class HomePage extends React.Component {
         <div>
           <div>
             <label>Spot</label>
-            <input id="spot" type="number" />
+            <input id="spot" type="number"  min="0"/>
           </div>
           <div>
             <label>Default Cost(tick/lot)</label>
             <input id="defaultCost" type="number" min="0" defaultValue="1" />
           </div>
           <div>
+            <label>Risk-free Rate</label>
+            <input id="riskFreeRate" type="number" defaultValue="0.03" step="0.001" />
+          </div>
+          <div>
             <label>Days to Expiration</label>
-            <input id="days2Expr" type="number" />
+            <input id="days2Expr" type="number" min="0.0" step="1"/>
           </div>
           <div id="fplot" style={plotStyle}></div>
 

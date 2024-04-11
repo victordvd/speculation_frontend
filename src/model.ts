@@ -19,6 +19,8 @@ export class PositionModel {
   cp: CP
   amount: number
   price: number
+  iv: number
+
   row = $("<tr>")
 
   td_act: JQuery<HTMLElement>
@@ -27,6 +29,7 @@ export class PositionModel {
   td_strike: JQuery<HTMLElement>
   td_amount: JQuery<HTMLElement>
   td_price: JQuery<HTMLElement>
+  td_iv: JQuery<HTMLElement>
 
   constructor() { }
 

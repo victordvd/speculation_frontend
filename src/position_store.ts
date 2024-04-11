@@ -28,6 +28,7 @@ export class PostionStore {
     cp: number//C:+1  P:-1
     ls: number//L:-  S:+
     price: number
+    iv: number// Implied Volatility
 
     // static strikes:Array<number>
     // static m:number
@@ -131,8 +132,6 @@ export class PostionStore {
 
         // [strike, B-S fn]]
         let strikeExprFnMap: Map<number,(ftx:number)=>number> = new Map()
-
-        let days2Expr = Number($('#days2Expr').val())/252
         let defaultCost = $('#defaultCost').val() as number
 
         this.data.forEach((pos) => {
@@ -148,9 +147,6 @@ export class PostionStore {
             
             let ls:number,cp:number
             let cpStr:string
-            let riskFreeRate = .015
-
-            let exprXYs:Array<any> = []
             
             if (pos.contract === Contract.TXO) { 
                 if (pos.ls === LS.LONG)
@@ -166,8 +162,6 @@ export class PostionStore {
                     cpStr = 'put'
                 }
 
-                let impVola = iv.getImpliedVolatility(pos.price, GlobalVar.txoData.spot, pos.strike, days2Expr, riskFreeRate, cpStr)
-
                 if (cp === 1) {
                     m1 = 0
                     b1 = (ls * pos.price) * pos.amount
@@ -181,9 +175,14 @@ export class PostionStore {
                 }
 
                 // set data points of "days-to-expiry"
+                let days2Expr = Number($('#days2Expr').val())
+                let year2Expr = days2Expr/252
+                let riskFreeRate = Number($('#riskFreeRate').val())
+                console.log('risk-free rate:',riskFreeRate,'days2expr:',days2Expr,'year2expr:',year2Expr)
+                let impVola = iv.getImpliedVolatility(pos.price, GlobalVar.txoData.spot, pos.strike, year2Expr, riskFreeRate, cpStr)
                 let exprFn = function (ftx:number) {
-                    let exprPrice = bs.blackScholes(ftx, pos.strike, days2Expr, impVola, riskFreeRate, cpStr) 
-                    return (-ls * (exprPrice-pos.price) -defaultCost) * pos.amount // substract cost
+                    let exprPrice = bs.blackScholes(ftx, pos.strike, year2Expr, impVola, riskFreeRate, cpStr) 
+                    return (-ls * (exprPrice-pos.price) -defaultCost) * pos.amount
                 }    
                 strikeExprFnMap.set(pos.strike, exprFn)
 
@@ -307,6 +306,7 @@ export class PostionStore {
         if(strikeExprFnMap.size>0){
             plotVO.push({
                 graphType: 'polyline',
+                color:'#147340',
                 fn: function (scope:any) {
                   var ftx = scope.x
                   let fns = Array.from(strikeExprFnMap.values())

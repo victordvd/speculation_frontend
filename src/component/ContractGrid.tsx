@@ -15,9 +15,9 @@ export default class ContractGrid extends React.Component<Props, { items: Array<
 
     super(props);
     this.state = {
-      items: [<Row><Col>Buy</Col><Col>Sell</Col><Col>Strike</Col><Col>Buy</Col><Col>Sell</Col></Row>]
+      items: [<Row><Col>Bid</Col><Col>Ask</Col><Col>Strike</Col><Col>Bid</Col><Col>Ask</Col></Row>]
     }
-    props.children = [<Row><Col>Buy</Col><Col>Sell</Col><Col>Strike</Col><Col>Buy</Col><Col>Sell</Col></Row>]
+    props.children = [<Row><Col>Bid</Col><Col>Ask</Col><Col>Strike</Col><Col>Bid</Col><Col>Ask</Col></Row>]
 
   }
 
@@ -29,7 +29,7 @@ export default class ContractGrid extends React.Component<Props, { items: Array<
 
   clear(){
     this.setState({
-      items: [<Row><Col>Buy</Col><Col>Sell</Col><Col>Strike</Col><Col>Buy</Col><Col>Sell</Col></Row>]
+      items: [<Row><Col>Bid</Col><Col>Ask</Col><Col>Strike</Col><Col>Bid</Col><Col>Ask</Col></Row>]
     })
   }
 
