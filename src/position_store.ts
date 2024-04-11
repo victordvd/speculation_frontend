@@ -183,7 +183,6 @@ export class PostionStore {
                 // set data points of "days-to-expiry"
                 let exprFn = function (ftx:number) {
                     let exprPrice = bs.blackScholes(ftx, pos.strike, days2Expr, impVola, riskFreeRate, cpStr) 
-                     
                     return (-ls * (exprPrice-pos.price) -defaultCost) * pos.amount // substract cost
                 }    
                 strikeExprFnMap.set(pos.strike, exprFn)
