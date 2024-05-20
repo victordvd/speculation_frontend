@@ -291,7 +291,7 @@ export class PostionStore {
             if (defaultCost > 0)
                 fn += '-' + Number(defaultCost) * fnSet.length
             console.log(fn)
-            let color = red
+            let color = blue
 
             if (i % 2 === 0)
                 color = red
@@ -303,7 +303,10 @@ export class PostionStore {
 
         // plotVO.push({  fn: fnSet.length*-defaultCost+""/*,closed: true*/ })
 
-        if(strikeExprFnMap.size>0){
+        let dispTimeVal = $('#timeValue').is(':checked')
+
+
+        if(strikeExprFnMap.size>0 && dispTimeVal){
             plotVO.push({
                 graphType: 'polyline',
                 color:'#147340',

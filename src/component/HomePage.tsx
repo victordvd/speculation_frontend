@@ -126,6 +126,11 @@ class HomePage extends React.Component {
     $('#days2Expr').change(() => {
       PostionStore.plotPosition()
     })
+
+    $('#timeValue').on("click",() => {
+      PostionStore.plotPosition()
+    })
+    $('#timeValue').prop('checked', true)
     // CanvasBuilder.init()
   }
 
@@ -194,6 +199,10 @@ class HomePage extends React.Component {
           <div>
             <label>Days to Expiration</label>
             <input id="days2Expr" type="number" min="0.0" step="1"/>
+          </div>
+          <div>
+            <label>Display Time Value</label>
+            <input id="timeValue" type="checkbox"/>
           </div>
           <div id="fplot" style={plotStyle}></div>
 

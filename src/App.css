@@ -42,9 +42,12 @@ canvas{
 
 }
 
-label{
+label {
     margin-right: 10px;
-}
+    display: inline-block;
+    width: 140px;
+    text-align: left;
+}​
 
 table {
     border: 1px solid black;
