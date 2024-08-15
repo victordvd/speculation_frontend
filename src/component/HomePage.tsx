@@ -9,13 +9,17 @@ import ContractGrid from './ContractGrid'
 import { Container, Row, Col } from 'react-grid-system';
 import ContractWeekCombo from './ContractWeekCombo'
 import Popup from './Popup';
+import {WebSocketUtil} from '../websocket';
+import '../App.css';
+
 
 class HomePage extends React.Component {
 
   contractSelector = React.createRef<ContractGrid>()
   contractWeekCombo = React.createRef<ContractWeekCombo>()
   jsonPopup = React.createRef<Popup>()
-
+  firstInit = true
+  
   addContractRows() {
     this.contractSelector.current.clear()
 
@@ -50,35 +54,39 @@ class HomePage extends React.Component {
   loadTxoData(home: any, contractWeek?: string) {
     // let home = this;
     // load raw data
-    $.get(window.location.href.match(/^.*\//)[0] + "servlet/getTxoData", { contractWeek: contractWeek }, function (data) {
-      GlobalVar.txoData = data.data;
-      console.log('load data contractWeek:' + contractWeek + ' target week: ' + GlobalVar.txoData.targetContractCode)
-      console.log(GlobalVar.txoData)
+    $.get(window.location.href.match(/^.*\//)[0] + "servlet/getTxoData", { contractWeek: contractWeek },data=>home.renderTxoData(home,data,true))
+  }
 
-      // set spot
-      console.log('spot:' + GlobalVar.txoData.spot)
-      $('#spot').val(GlobalVar.txoData.spot)
+  renderTxoData(home: any, data:any, resetContractWeek=false){
+    GlobalVar.txoData = data.data;
+
+    console.log(GlobalVar.txoData)
+
+    // set spot
+    console.log('spot:' + GlobalVar.txoData.spot)
+    $('#spot').val(GlobalVar.txoData.spot)
 
 
-      // set contract weeks
+    // set contract weeks
+    if(resetContractWeek){
       home.contractWeekCombo.current.clear()
-
       GlobalVar.txoData.contractCodes.forEach((code: string) => {
         home.contractWeekCombo.current.addContractCode(code)
       });
-
       home.contractWeekCombo.current.setContractCode(GlobalVar.txoData.targetContractCode)
+    }
+    // calculate days to expriation
+    let days2Expr = String(Utils.getDays2ExpiryDate(GlobalVar.txoData.targetContractCode))
+    $('#days2Expr').val(days2Expr)
+    
 
-      // calculate days to expriation
-      let days2Expr = String(Utils.getDays2ExpiryDate(GlobalVar.txoData.targetContractCode))
-      $('#days2Expr').val(days2Expr)
-      
+    // init selector
+    home.addContractRows()
 
-      // init selector
-      home.addContractRows()
-
+    if(home.firstInit){
       PostionStore.plotPosition()
-    });
+      home.firstInit = false
+    }
   }
 
   componentDidMount() {
@@ -132,6 +140,9 @@ class HomePage extends React.Component {
     })
     $('#timeValue').prop('checked', true)
     // CanvasBuilder.init()
+
+    // WebSocket
+    let websocketUtil = new WebSocketUtil(this)
   }
 
   fallbackCopyTextToClipboard(text: string) {
@@ -176,7 +187,6 @@ class HomePage extends React.Component {
       display: 'inline-block', 'max-height': '400px', height:'400px', overflow: 'hidden',
       width: '500px', padding: '5px', border: '1px solid black'
     }
-
     const overflowStyle = {overflow: 'scroll',height:'370px'}
     let home = this
 
@@ -204,13 +214,30 @@ class HomePage extends React.Component {
             <label>Display Time Value</label>
             <input id="timeValue" type="checkbox"/>
           </div>
+        {/* <div>
+            <form>
+                <div>
+                    <label>Messege</label>
+                    <input id="msgTxt" type="text" placeholder="messege here..." />
+                    <button id="socketSendBtn" type="submit">Send</button>
+                </div>
+            </form>
+            <tbody id="txtArea"></tbody>
+        </div> */}
           <div id="fplot" style={plotStyle}></div>
 
           <div style={selectorStyle} >
-            <div>
-              <label>Contract Week</label>
-              <ContractWeekCombo ref={this.contractWeekCombo} onChangeImpl={(v: string) => home.loadTxoData.apply(null, [home, v])}></ContractWeekCombo>
-            </div >
+            <div className='row'>
+              <div className='column'>
+                <label>Contract Week</label>
+                <ContractWeekCombo ref={this.contractWeekCombo} onChangeImpl={(v: string) => home.loadTxoData.apply(null, [home, v])}></ContractWeekCombo>
+              </div>
+              <div className='column'>
+                <label>Auto-Update</label>
+                <button id="socketConnBtn" type="submit">Enable</button>
+                <button id="socketDisconnBtn" type="submit" disabled>Disable</button>
+              </div>
+            </div>
             <div style={overflowStyle}>
               <ContractGrid ref={this.contractSelector}></ContractGrid>
             </div>

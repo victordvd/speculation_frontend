@@ -104,7 +104,14 @@ export class Utils {
 
         // 202401W2
         let first_day = new Date(year, month, 1)
-        first_day.setDate(first_day.getDate() + (4-first_day.getDay()) % 7)
+        // first_day.setDate(first_day.getDate() + (4-first_day.getDay()) % 7)
+
+        // Calculate the difference between the first day of the month and Wednesday
+        let daysUntilWednesday = (3 - first_day.getDay() + 7) % 7; // 3 is the day code for Wednesday
+        
+        // Add the difference to the first day to get the first Wednesday
+        let firstWednesday = new Date(daysUntilWednesday);
+        first_day.setDate(first_day.getDate() + daysUntilWednesday);
 
         if(contract_month.length==8){
             let week = Number(contract_month.substring(7,8))
@@ -117,7 +124,7 @@ export class Utils {
         console.log('error:',contract_month)
         throw e
     }
-}
+  }
 
 
 }

@@ -34,7 +34,7 @@ export default class ContractWeekCombo extends React.Component<Props, { value?: 
   }
 
   handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    console.log('contract cmb:' + event.target.value)
+    // console.log('contract cmb:' + event.target.value)
     this.setState({ items: this.state.items, value: event.target.value });
     this.props.onChangeImpl(event.target.value)
   }
