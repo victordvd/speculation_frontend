@@ -46,7 +46,8 @@ export class WebSocketUtil {
         while($('#socketConnBtn').prop('disabled')){
             let contractWeek:string = this.home.contractWeekCombo.current.state.value;
             console.log('Contract: '+contractWeek)
-            this.stompClient.send("/app/subscriptTxo", {}, JSON.stringify({'contractWeek': contractWeek}));
+            // this.stompClient.send("/app/subscriptTxo", {}, JSON.stringify({'contractWeek': contractWeek}));
+            this.stompClient.send("/app/subscriptTxo", {}, contractWeek);
 
             await this.sleep(interval);
         }
