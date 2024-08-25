@@ -105,29 +105,6 @@ class HomePage extends React.Component {
     //   Utils.addPosition(pos)
     // });
 
-
-    $('#addBtn').click(() => {
-      let m_2 = PositionModel.getTXOInstance(LS.LONG, CP.CALL, Contract.TXO, 16000, 1, 64.5)
-
-      Utils.addPosition(m_2)
-    })
-
-    $('#clearBtn').click(() => {
-      PostionStore.removeAllPosition()
-
-    })
-
-    $('#toJsonBtn').click(() => {
-      let json = PostionStore.getDataJson()
-      window.alert(json)
-
-      this.copyTextToClipboard(json)
-    })
-
-    $('#loadJsonBtn').click(() => {
-      this.jsonPopup.current.handleOpenModal()
-    })
-
     // WebSocket
     let websocketUtil = new WebSocketUtil(this)
   }
@@ -233,10 +210,14 @@ class HomePage extends React.Component {
         </div>
         <br />
         <div>
-          <button id="addBtn">Add</button>
-          <button id="clearBtn">Clear</button>
-          <button id="toJsonBtn">To JSON</button>
-          <button id="loadJsonBtn">Load JSON</button>
+          <button id="addBtn" onClick={()=>{      
+            let m_2 = PositionModel.getTXOInstance(LS.LONG, CP.CALL, Contract.TXO, 22000, 1, 64.5);
+            Utils.addPosition(m_2);}}>Add</button>
+          <button id="clearBtn" onClick={()=>PostionStore.removeAllPosition()}>Clear</button>
+          <button id="toJsonBtn" onClick={()=>{ let json = PostionStore.getDataJson();
+            window.alert(json);
+            this.copyTextToClipboard(json);}}>To JSON</button>
+          <button id="loadJsonBtn" onClick={()=>this.jsonPopup.current.handleOpenModal()}>Load JSON</button>
         </div>
         <div>
           <table id="positionTable">
