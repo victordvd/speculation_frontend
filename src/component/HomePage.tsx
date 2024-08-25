@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import $ from 'jquery';
 import { LS, PositionModel, CP, Contract } from '../model'
 import { PostionStore } from '../position_store'
@@ -12,6 +12,11 @@ import Popup from './Popup';
 import {WebSocketUtil} from '../websocket';
 import '../App.css';
 
+function TimeValueChk(){
+  const [checked,setChecked] = useState(true);
+  const handleClick = ()=>{setChecked(!checked);PostionStore.plotPosition();}
+  return (<input id="timeValue" type="checkbox" checked={checked} onClick={handleClick}/>)
+}
 
 class HomePage extends React.Component {
 
@@ -19,7 +24,7 @@ class HomePage extends React.Component {
   contractWeekCombo = React.createRef<ContractWeekCombo>()
   jsonPopup = React.createRef<Popup>()
   firstInit = true
-  
+
   addContractRows() {
     this.contractSelector.current.clear()
 
@@ -123,24 +128,6 @@ class HomePage extends React.Component {
       this.jsonPopup.current.handleOpenModal()
     })
 
-    $('#spot').change(() => {
-      PostionStore.plotPosition()
-    })
-
-    $('#riskFreeRate').change(() => {
-      PostionStore.plotPosition()
-    })
-
-    $('#days2Expr').change(() => {
-      PostionStore.plotPosition()
-    })
-
-    $('#timeValue').on("click",() => {
-      PostionStore.plotPosition()
-    })
-    $('#timeValue').prop('checked', true)
-    // CanvasBuilder.init()
-
     // WebSocket
     let websocketUtil = new WebSocketUtil(this)
   }
@@ -180,6 +167,7 @@ class HomePage extends React.Component {
     });
   }
 
+  // Render
   render() {
     const bodyStyle = { padding: "20px" }
     const plotStyle = { display: 'inline-block', 'vertical-align': 'top' }
@@ -196,23 +184,23 @@ class HomePage extends React.Component {
         <div>
           <div>
             <label>Spot</label>
-            <input id="spot" type="number"  min="0"/>
+            <input id="spot" type="number"  min="0" onChange={()=>PostionStore.plotPosition()}/>
           </div>
           <div>
             <label>Default Cost(tick/lot)</label>
-            <input id="defaultCost" type="number" min="0" defaultValue="1" />
+            <input id="defaultCost" type="number" min="0" defaultValue="1" onChange={()=>PostionStore.plotPosition()}/>
           </div>
           <div>
             <label>Risk-free Rate</label>
-            <input id="riskFreeRate" type="number" defaultValue="0.03" step="0.001" />
+            <input id="riskFreeRate" type="number" defaultValue="0.03" step="0.001" onChange={()=>PostionStore.plotPosition()}/>
           </div>
           <div>
             <label>Days to Expiration</label>
-            <input id="days2Expr" type="number" min="0.0" step="1"/>
+            <input id="days2Expr" type="number" min="0.0" step="1" onChange={()=>PostionStore.plotPosition()}/>
           </div>
           <div>
             <label>Display Time Value</label>
-            <input id="timeValue" type="checkbox"/>
+            <TimeValueChk/>
           </div>
         {/* <div>
             <form>
