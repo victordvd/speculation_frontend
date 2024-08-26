@@ -1,6 +1,3 @@
-import React from 'react';
-
-
 import HomePage from './component/HomePage';
 import './App.css';
 import {LS} from './model'

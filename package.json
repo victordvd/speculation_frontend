@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "opsimulator",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.7",
     "@stomp/stompjs": "^7.0.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
@@ -15,10 +16,11 @@
     "function-plot": "^1.22.7",
     "implied-volatility": "^1.0.0",
     "jquery": "^3.6.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-grid-system": "^7.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-grid-system": "^8.2.0",
     "react-modal": "^3.14.3",
+    "react-redux": "^9.1.2",
     "react-scripts": "^5.0.1",
     "sockjs-client": "^1.6.1",
     "web-vitals": "^1.1.2",
@@ -50,8 +52,8 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.5",
-    "@types/react": "^17.0.80",
-    "@types/react-modal": "^3.12.1",
+    "@types/react": "^18.3.4",
+    "@types/react-modal": "^3.16.3",
     "typescript": "^4.3.5"
   }
 }

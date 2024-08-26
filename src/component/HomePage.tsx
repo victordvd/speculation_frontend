@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import $ from 'jquery';
 import { LS, PositionModel, CP, Contract } from '../model'
 import { PostionStore } from '../position_store'
-import Button from './Button';
 import { Utils } from '../util'
 import GlobalVar from '../Global'
 import ContractGrid from './ContractGrid'
-import { Container, Row, Col } from 'react-grid-system';
+import {Row, Col } from 'react-grid-system';
 import ContractWeekCombo from './ContractWeekCombo'
 import Popup from './Popup';
 import {WebSocketUtil} from '../websocket';
+import TestCmp from './TestCmp';
 import '../App.css';
 
 function TimeValueChk(){
@@ -70,7 +70,6 @@ class HomePage extends React.Component {
     // set spot
     console.log('spot:' + GlobalVar.txoData.spot)
     $('#spot').val(GlobalVar.txoData.spot)
-
 
     // set contract weeks
     if(resetContractWeek){
@@ -157,8 +156,9 @@ class HomePage extends React.Component {
 
     return (
       <div style={bodyStyle}>
-        <Popup ref={this.jsonPopup}>popup</Popup>
+        {/* <Popup ref={this.jsonPopup}>popup</Popup> */}
         <div>
+          {/* <TestCmp/> */}
           <div>
             <label>Spot</label>
             <input id="spot" type="number"  min="0" onChange={()=>PostionStore.plotPosition()}/>
